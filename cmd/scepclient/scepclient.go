@@ -162,7 +162,7 @@ func run(cfg runCfg) error {
 	}
 
 	if err := respMsg.DecryptPKIEnvelope(signerCert, key); err != nil {
-		fmt.Println("Server error : " + string(respBytes[0:isAsciiPrintableTo(string(respBytes))]))
+		fmt.Printf("Decryption error : %v", err)
 		os.Exit(1)
 	}
 

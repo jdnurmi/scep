@@ -23,7 +23,7 @@ func ServiceHandler(ctx context.Context, svc Service, logger kitlog.Logger) http
 		kithttp.ServerBefore(updateContext),
 	}
 
-	scepHandler := kithttp.NewServer( ctx,
+	scepHandler := kithttp.NewServer(
 		makeSCEPEndpoint(svc),
 		decodeSCEPRequest,
 		encodeSCEPResponse,

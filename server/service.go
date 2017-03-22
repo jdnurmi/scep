@@ -103,7 +103,11 @@ func (svc service) PKIOperation(ctx context.Context, data []byte) ([]byte, error
 		KeyUsage:     x509.KeyUsageDigitalSignature,
 		ExtKeyUsage: []x509.ExtKeyUsage{
 			x509.ExtKeyUsageClientAuth,
+			x509.ExtKeyUsageServerAuth,
 		},
+                UnknownExtKeyUsage: []asn1.ObjectIdentifier{
+                        asn1.ObjectIdentifier{1,3,6,1,5,5,8,2,2},
+                },
 	}
 
 	certRep, err := msg.SignCSR(ca, svc.caKey, tmpl)

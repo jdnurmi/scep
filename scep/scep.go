@@ -16,7 +16,7 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/micromdm/scep/scep/internal/pkcs7"
+	"github.com/fullsailor/pkcs7"
 )
 
 // errors
@@ -118,7 +118,7 @@ type PKIMessage struct {
 	Recipients []*x509.Certificate
 
 	// Signer info
-	SignerKey  *rsa.PrivateKey
+	SignerKey  crypto.PrivateKey
 	SignerCert *x509.Certificate
 }
 
@@ -342,7 +342,7 @@ func addChallenge(csr *x509.CertificateRequest, challenge string) ([]byte, error
 }
 
 // DecryptPKIEnvelope decrypts the pkcs envelopedData inside the SCEP PKIMessage
-func (msg *PKIMessage) DecryptPKIEnvelope(cert *x509.Certificate, key *rsa.PrivateKey) error {
+func (msg *PKIMessage) DecryptPKIEnvelope(cert *x509.Certificate, key crypto.PrivateKey) error {
 	p7, err := pkcs7.Parse(msg.p7.Content)
 	if err != nil {
 		return err
@@ -384,7 +384,7 @@ func (msg *PKIMessage) DecryptPKIEnvelope(cert *x509.Certificate, key *rsa.Priva
 
 // SignCSR creates an x509.Certificate based on a template and Cert Authority credentials
 // returns a new PKIMessage with CertRep data
-func (msg *PKIMessage) SignCSR(crtAuth *x509.Certificate, keyAuth *rsa.PrivateKey, template *x509.Certificate) (*PKIMessage, error) {
+func (msg *PKIMessage) SignCSR(crtAuth *x509.Certificate, keyAuth crypto.PrivateKey, template *x509.Certificate) (*PKIMessage, error) {
 	// check if CSRReqMessage has already been decrypted
 	if msg.CSRReqMessage.CSR == nil {
 		if err := msg.DecryptPKIEnvelope(crtAuth, keyAuth); err != nil {
