@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 
@@ -22,7 +23,7 @@ func ServiceHandler(ctx context.Context, svc Service, logger kitlog.Logger) http
 		kithttp.ServerBefore(updateContext),
 	}
 
-	scepHandler := kithttp.NewServer(
+	scepHandler := kithttp.NewServer( ctx,
 		makeSCEPEndpoint(svc),
 		decodeSCEPRequest,
 		encodeSCEPResponse,
@@ -152,6 +153,8 @@ func makeSCEPEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		op := ctx.Value("operation")
 		if op == nil {
+			log.Printf("Request: %#v", request)
+			log.Printf("Context: %#v", ctx)
 			return SCEPResponse{Err: errors.New("unknown operation")}, nil
 		}
 		req := request.(SCEPRequest)
